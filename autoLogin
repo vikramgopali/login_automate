@@ -14,6 +14,7 @@ public class Test {
 	protected static String usrmetafield = "";
 	protected static String psswrdmetafield = "";
 	protected static String subBtnmetafield = "";
+	protected static Boolean IS_MFA_CHALLENGED = false;
 	
 	public static void main( String []args ) throws Exception{
 
@@ -21,7 +22,7 @@ public class Test {
 		System.setProperty("webdriver.chrome.driver", "D:\\chrome\\chromedriver.exe");
 		WebDriver driver = new ChromeDriver();
 		driver.manage().window().maximize();
-		driver.navigate().to("https://my.10x.co.za/Login.aspx"); 
+		driver.navigate().to("https://web1.secureinternetbank.com/pbi_pbi1961/Pbi1961.ashx?rt=304971945&logonby=connect3&PRMaccess=account"); 
 		//driver.navigate().to("https://www.yesbank.in/retail-bankings.html");
 		//driver.findElement(By.xpath("//*[@id=\"jsn-mainbody\"]/div[2]/div[2]/form/div[1]/span")).click();
 		List<WebElement> inpTags = driver.findElements(By.tagName("input"));
@@ -50,7 +51,46 @@ public class Test {
 		getUserNmeFields(driver,tMp,usrNme);
 		getPasswrdFields(driver,tMp,pssWrd);
 		getsubBtnnFields(driver,tMp,subBtn);
+		if(usrNme.size()==0 && pssWrd.size()==0){
+			System.out.println("login url has been changed or not correct or not in login page please check the url");
+		}
 		//tryLogin(driver,subBtn,usrNme,pssWrd);
+		/*IS_MFA_CHALLENGED = isOnMfa(driver);
+		if(IS_MFA_CHALLENGED){
+			oneStepChallange(driver);//for security questions
+			twoStepChallange(driver);//for otp
+		}
+		isLoginSuccssful(driver);*/
+	}
+
+	private static void isLoginSuccssful(WebDriver driver) {
+		// TODO Auto-generated method stub
+		if(isOnPostLoginPage(driver)){
+			System.out.println("login successfull");
+		}else{
+			System.out.println("login failed...needs attention");
+		}
+		
+	}
+
+	private static boolean isOnPostLoginPage(WebDriver driver) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	private static void twoStepChallange(WebDriver driver) {
+		// TODO handle otp
+		
+	}
+
+	private static void oneStepChallange(WebDriver driver) {
+		// TODO handle security questions
+		
+	}
+
+	private static Boolean isOnMfa(WebDriver driver) {
+		// TODO add check for is on mfa or security questions page
+		return null;
 	}
 
 	private static void tryLogin(WebDriver driver, List<String> subBtn,
@@ -75,9 +115,9 @@ public class Test {
 		ListIterator<String> itr = tMp.listIterator();
 		int i=0;
 		while(itr.hasNext()){
-			if((tMp.get(i).toLowerCase().contains("type=\"submit\"")) && (tMp.get(i).toLowerCase().contains("log") || tMp.get(i).toLowerCase().contains("sign")) ){
+			if((tMp.get(i).toLowerCase().contains("type=\"submit\"")) && (tMp.get(i).toLowerCase().contains("login") || tMp.get(i).toLowerCase().contains("sign in") || tMp.get(i).toLowerCase().contains("submit")  || tMp.get(i).toLowerCase().contains("signin") || tMp.get(i).toLowerCase().contains("log in"))){
 				subBtn.add(tMp.get(i));
-			}else if(tMp.get(i).contains("<button") && (tMp.get(i).toLowerCase().contains("log") || tMp.get(i).toLowerCase().contains("sign"))){
+			}else if(tMp.get(i).contains("<button") && (tMp.get(i).toLowerCase().contains("login") || tMp.get(i).toLowerCase().contains("sign in") || tMp.get(i).toLowerCase().contains("submit")  || tMp.get(i).toLowerCase().contains("signin") || tMp.get(i).toLowerCase().contains("log in"))){
 				subBtn.add(tMp.get(i));
 			}
 			i++;
@@ -98,7 +138,7 @@ public class Test {
 		Iterator<WebElement> itr12 = iasd.iterator();
 		while (itr12.hasNext() ) {
 			String name123 = itr12.next().getAttribute("outerHTML");
-			if(name123.toLowerCase().contains("login") && name123.toLowerCase().contains("onclick=") && !name123.toLowerCase().contains("forgot")){
+			if((name123.toLowerCase().contains("login") || name123.toLowerCase().contains("log in") || name123.toLowerCase().contains("signin") || name123.toLowerCase().contains("sign in")) && name123.toLowerCase().contains("onclick=") && !name123.toLowerCase().contains("forgot")){
 				System.out.println(name123);
 			}
 		}
@@ -116,6 +156,14 @@ public class Test {
 			itr.next();
 		}
 		System.out.println("psswrd size "+pssWrd.size());
+		if(pssWrd.size() == 0){
+			handleNextPagePass(driver);
+		}
+	}
+
+	private static void handleNextPagePass(WebDriver driver) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	private static void getUserNmeFields(WebDriver driver, List<String> tMp,List<String> usrNme) {
@@ -123,7 +171,7 @@ public class Test {
 		ListIterator<String> itr = tMp.listIterator();
 		int i=0;
 		while(itr.hasNext()){
-			if((tMp.get(i).toLowerCase().contains("type=\"text\"")) && ((tMp.get(i).toLowerCase().contains("user") || tMp.get(i).toLowerCase().contains("login")))){
+			if((tMp.get(i).toLowerCase().contains("type=\"text\"")) && ((tMp.get(i).toLowerCase().contains("user") || tMp.get(i).toLowerCase().contains("login") || tMp.get(i).toLowerCase().contains("access") || tMp.get(i).toLowerCase().contains("log in") ))){
 				usrNme.add(tMp.get(i));
 			}
 			i++;
