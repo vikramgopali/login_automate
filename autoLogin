@@ -22,9 +22,22 @@ public class Test {
 		System.setProperty("webdriver.chrome.driver", "D:\\chrome\\chromedriver.exe");
 		WebDriver driver = new ChromeDriver();
 		driver.manage().window().maximize();
-		driver.navigate().to("https://web1.secureinternetbank.com/pbi_pbi1961/Pbi1961.ashx?rt=304971945&logonby=connect3&PRMaccess=account"); 
-		//driver.navigate().to("https://www.yesbank.in/retail-bankings.html");
-		//driver.findElement(By.xpath("//*[@id=\"jsn-mainbody\"]/div[2]/div[2]/form/div[1]/span")).click();
+		driver.navigate().to("https://vermont457retire.gwrs.com/login.do"); 
+		for (WebElement frame : driver.findElements(By.tagName("frame"))) {
+			driver.switchTo().defaultContent();
+			driver.switchTo().frame(frame);
+			System.out.println("frame:: "+": " +driver.findElement(By.tagName("body")).getAttribute("outerHTML") );
+
+		}
+
+		for (WebElement frame : driver.findElements(By.tagName("frame"))) {
+			driver.switchTo().defaultContent();
+			driver.switchTo().frame(frame);
+			System.out.println("frame:: "+": " +driver.findElement(By.tagName("body")).getAttribute("outerHTML") );
+
+		}
+		//driver.navigate().to("https://retail.onlinesbi.com/retail/login.htm");
+		//driver.findElement(By.xpath("//*[@id=\"phishing_banner\"]/div/a")).click();
 		List<WebElement> inpTags = driver.findElements(By.tagName("input"));
 		List<WebElement> btnTags = driver.findElements(By.tagName("button"));
 		System.out.println("length is "+inpTags.size());
@@ -117,7 +130,7 @@ public class Test {
 		while(itr.hasNext()){
 			if((tMp.get(i).toLowerCase().contains("type=\"submit\"")) && (tMp.get(i).toLowerCase().contains("login") || tMp.get(i).toLowerCase().contains("sign in") || tMp.get(i).toLowerCase().contains("submit")  || tMp.get(i).toLowerCase().contains("signin") || tMp.get(i).toLowerCase().contains("log in"))){
 				subBtn.add(tMp.get(i));
-			}else if(tMp.get(i).contains("<button") && (tMp.get(i).toLowerCase().contains("login") || tMp.get(i).toLowerCase().contains("sign in") || tMp.get(i).toLowerCase().contains("submit")  || tMp.get(i).toLowerCase().contains("signin") || tMp.get(i).toLowerCase().contains("log in"))){
+			}else if((tMp.get(i).toLowerCase().contains("<button") || tMp.get(i).toLowerCase().contains("type=\"button\"")) && (tMp.get(i).toLowerCase().contains("login") || tMp.get(i).toLowerCase().contains("sign in") || tMp.get(i).toLowerCase().contains("submit")  || tMp.get(i).toLowerCase().contains("signin") || tMp.get(i).toLowerCase().contains("log in"))){
 				subBtn.add(tMp.get(i));
 			}
 			i++;
@@ -127,7 +140,8 @@ public class Test {
 		System.out.println("buttons are "+subBtn.size());
 		if(subBtn.size() == 0){
 			getAnchorLink(driver);
-			
+		}else{
+			System.out.println(subBtn);
 		}
 	}
 
@@ -156,6 +170,7 @@ public class Test {
 			itr.next();
 		}
 		System.out.println("psswrd size "+pssWrd.size());
+		System.out.println(pssWrd);
 		if(pssWrd.size() == 0){
 			handleNextPagePass(driver);
 		}
@@ -163,7 +178,7 @@ public class Test {
 
 	private static void handleNextPagePass(WebDriver driver) {
 		// TODO Auto-generated method stub
-		
+		System.out.println("password is on next page whic needs to be hanfdled");
 	}
 
 	private static void getUserNmeFields(WebDriver driver, List<String> tMp,List<String> usrNme) {
@@ -171,12 +186,13 @@ public class Test {
 		ListIterator<String> itr = tMp.listIterator();
 		int i=0;
 		while(itr.hasNext()){
-			if((tMp.get(i).toLowerCase().contains("type=\"text\"")) && ((tMp.get(i).toLowerCase().contains("user") || tMp.get(i).toLowerCase().contains("login") || tMp.get(i).toLowerCase().contains("access") || tMp.get(i).toLowerCase().contains("log in") ))){
+			if(((tMp.get(i).toLowerCase().contains("type=\"text\"") || tMp.get(i).toLowerCase().contains("login") ||tMp.get(i).toLowerCase().contains("log in") || tMp.get(i).toLowerCase().contains("signin") || tMp.get(i).toLowerCase().contains("sign in") || tMp.get(i).toLowerCase().contains("access")) &&( !tMp.get(i).toLowerCase().contains("<button") && !tMp.get(i).toLowerCase().contains("type=\"submit\"") && !tMp.get(i).toLowerCase().contains("type=\"password\""))) && ((tMp.get(i).toLowerCase().contains("user") || tMp.get(i).toLowerCase().contains("login") || tMp.get(i).toLowerCase().contains("access") || tMp.get(i).toLowerCase().contains("log in") || tMp.get(i).toLowerCase().contains("maxlength") ||tMp.get(i).toLowerCase().contains("autocomplete") ))){
 				usrNme.add(tMp.get(i));
 			}
 			i++;
 			itr.next();
 		}
 		System.out.println("usrname fields are "+usrNme.size());
+		System.out.println(usrNme);
 	}
 }	
