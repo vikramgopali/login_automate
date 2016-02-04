@@ -1,0 +1,134 @@
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+
+public class Test {
+	
+	protected static String usrmetafield = "";
+	protected static String psswrdmetafield = "";
+	protected static String subBtnmetafield = "";
+	
+	public static void main( String []args ) throws Exception{
+
+
+		System.setProperty("webdriver.chrome.driver", "D:\\chrome\\chromedriver.exe");
+		WebDriver driver = new ChromeDriver();
+		driver.manage().window().maximize();
+		driver.navigate().to("https://my.10x.co.za/Login.aspx"); 
+		//driver.navigate().to("https://www.yesbank.in/retail-bankings.html");
+		//driver.findElement(By.xpath("//*[@id=\"jsn-mainbody\"]/div[2]/div[2]/form/div[1]/span")).click();
+		List<WebElement> inpTags = driver.findElements(By.tagName("input"));
+		List<WebElement> btnTags = driver.findElements(By.tagName("button"));
+		System.out.println("length is "+inpTags.size());
+		String name ;
+		List<String> tMp = new ArrayList<String>();
+		List<String> usrNme = new ArrayList<String>();
+		List<String> pssWrd = new ArrayList<String>();
+		List<String> subBtn = new ArrayList<String>();
+		Iterator<WebElement> itr = inpTags.iterator();
+		Iterator<WebElement> itr1 = btnTags.iterator();
+		while(itr.hasNext()) {
+			name = itr.next().getAttribute("outerHTML");
+			if(!(name.contains("Hidden") || (name.contains("none") && name.contains("display")) || name.contains("search") ||name.contains("HIDDEN") || name.contains("hidden") || (name.contains("checkbox")))){
+				tMp.add(name);
+			}
+		}
+		while(itr1.hasNext()) {
+			name = itr1.next().getAttribute("outerHTML");
+			if(!(name.contains("Hidden") || (name.contains("none") && name.contains("display")) || name.contains("search") ||name.contains("HIDDEN") || name.contains("hidden"))){
+				tMp.add(name);
+			}
+		}
+		System.out.println(tMp.size()+" "+tMp);
+		getUserNmeFields(driver,tMp,usrNme);
+		getPasswrdFields(driver,tMp,pssWrd);
+		getsubBtnnFields(driver,tMp,subBtn);
+		//tryLogin(driver,subBtn,usrNme,pssWrd);
+	}
+
+	private static void tryLogin(WebDriver driver, List<String> subBtn,
+			List<String> usrNme, List<String> pssWrd) {
+		// TODO Auto-generated method stub
+		String meta= "name";
+		for(int i=0;i<usrNme.size();i++){
+			usrmetafield = usrNme.get(i);
+			for(int j=0;j<pssWrd.size();j++){
+				psswrdmetafield = pssWrd.get(j);
+				for(int k=0;k<subBtn.size();k++){
+					subBtnmetafield = subBtn.get(k);
+					usrmetafield = usrmetafield.substring(usrmetafield.indexOf(meta)+meta.length()+1,usrmetafield.indexOf(meta)+10);
+					//System.out.println(usrmetafield);
+				}
+			}
+		}
+	}
+
+	private static void getsubBtnnFields(WebDriver driver, List<String> tMp,List<String> subBtn) {
+		// TODO Auto-generated method stub
+		ListIterator<String> itr = tMp.listIterator();
+		int i=0;
+		while(itr.hasNext()){
+			if((tMp.get(i).toLowerCase().contains("type=\"submit\"")) && (tMp.get(i).toLowerCase().contains("log") || tMp.get(i).toLowerCase().contains("sign")) ){
+				subBtn.add(tMp.get(i));
+			}else if(tMp.get(i).contains("<button") && (tMp.get(i).toLowerCase().contains("log") || tMp.get(i).toLowerCase().contains("sign"))){
+				subBtn.add(tMp.get(i));
+			}
+			i++;
+			itr.next();
+		}
+		
+		System.out.println("buttons are "+subBtn.size());
+		if(subBtn.size() == 0){
+			getAnchorLink(driver);
+			
+		}
+	}
+
+	private static void getAnchorLink(WebDriver driver) {
+		// TODO Auto-generated method stub
+		List<WebElement> iasd = driver.findElements(By.tagName("a"));
+		System.out.println("outer html is "+iasd.size());
+		Iterator<WebElement> itr12 = iasd.iterator();
+		while (itr12.hasNext() ) {
+			String name123 = itr12.next().getAttribute("outerHTML");
+			if(name123.toLowerCase().contains("login") && name123.toLowerCase().contains("onclick=") && !name123.toLowerCase().contains("forgot")){
+				System.out.println(name123);
+			}
+		}
+	}
+
+	private static void getPasswrdFields(WebDriver driver, List<String> tMp,List<String> pssWrd) {
+		// TODO Auto-generated method stub
+		ListIterator<String> itr = tMp.listIterator();
+		int i=0;
+		while(itr.hasNext()){
+			if((tMp.get(i).toLowerCase().contains("type=\"password\""))){
+				pssWrd.add(tMp.get(i));
+			}
+			i++;
+			itr.next();
+		}
+		System.out.println("psswrd size "+pssWrd.size());
+	}
+
+	private static void getUserNmeFields(WebDriver driver, List<String> tMp,List<String> usrNme) {
+		// TODO Auto-generated method stub
+		ListIterator<String> itr = tMp.listIterator();
+		int i=0;
+		while(itr.hasNext()){
+			if((tMp.get(i).toLowerCase().contains("type=\"text\"")) && ((tMp.get(i).toLowerCase().contains("user") || tMp.get(i).toLowerCase().contains("login")))){
+				usrNme.add(tMp.get(i));
+			}
+			i++;
+			itr.next();
+		}
+		System.out.println("usrname fields are "+usrNme.size());
+	}
+}	
